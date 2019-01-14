@@ -1,14 +1,14 @@
 ---
 title: "Prediction of liver fat in PCOS"
 author: "Laura Pyle"
-date: "August 2, 2018"
+date:  "`r format(Sys.time(), '%d %B %Y')`"
 output: word_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
-source('H:\\R\\Markdown sample\\01_functions.R')
+source('C:/Users/pylell/Documents/GitHub/Functions/01_functions.R')
 
 library(tidyr)
 library(magrittr)
