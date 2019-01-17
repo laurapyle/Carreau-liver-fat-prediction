@@ -34,8 +34,11 @@ library(rms)
 
 # create HS variable
 valid$HS <- ifelse(valid$Liver.Fat>5.5,1,0)
+# rename variables 
+names(valid)[names(valid) == 'BMI.percentile'] <- 'bmi.perc'
+names(valid)[names(valid) == 'Waist.circumference'] <- 'Waist_cm'
 
-valid_mod <- glm(HS ~ BMI.percentile + Waist.circumference + ALT + SHBG, data=valid,family=binomial(link="logit"))
+valid_mod <- glm(HS ~ bmi.perc + Waist_cm + ALT + SHBG, data=valid,family=binomial(link="logit"))
 tabx <- mod_tablog(valid_mod)
 
 # get predicted probability of HS
@@ -51,6 +54,20 @@ colnames(x) <- c("Observed no HS","Observed HS")
 y <- as.matrix(conf,what="overall")
 z <- as.matrix(conf,what="classes")
 yz <- rbind(y,z)
+
+# use coefficients that we got from the training cohort
+# first we need to read in the test data
+# read  data
+test <- read.csv("H:\\Endocrinology\\Green\\Carreau liver fat prediction\\Data\\NAFLD prediction score data.csv")
+# replace "." with "NA"
+test[test=="."] <- NA
+# remove missing observations
+test <- test %>% drop_na(HS,liver.fat.perc,bmi.perc,Waist_cm,HOMA,HDL,TG,ALT,Free.Testosterone,SHBG)
+# fit model to test data
+fred5 <- glm(HS ~ bmi.perc + Waist_cm + ALT + SHBG, data=test,family=binomial(link="logit"))
+
+# now fit model from test data to validation data
+valid$valid_mod_from_test <- predict(fred5,valid)
 
 ```
 
