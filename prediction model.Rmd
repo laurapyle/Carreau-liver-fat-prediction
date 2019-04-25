@@ -31,6 +31,12 @@ pred[pred=="."] <- NA
 pred <- pred %>% drop_na(HS,liver.fat.perc,bmi.perc,Waist_cm,HOMA,HDL,TG,ALT,Free.Testosterone,SHBG)
 N <- nrow(distinct(pred,ID))
 
+# calculate testosterone and TG in European units
+# testosterone was ng/dL, convert to nmol/L
+pred$test_nmol <- pred$Free.Testosterone*28.818444
+# TG was mg/dL to mmol/L
+pred$tg_mmol <- pred$TG*88.495575
+
 #install.packages("ElemStatLearn", dependencies=T)
 library(ElemStatLearn)
 library(rpart)
@@ -106,6 +112,12 @@ opt.cutoff.NPV <- optimal.cutpoints(X="prob",status="HS",data=pred,method="Value
                                     control=control.cutpoints(valueNPV=0.9))
 pred$prediction2 <- ifelse(pred$prob>=0.1532,1,0)
 conf2 <- confusionMatrix(as.factor(pred$prediction2),as.factor(pred$HS),positive='1')
+
+# checking model parameters once testosterone and TG converted
+full_euro <- glm(HS ~ bmi.perc + Waist_cm + HOMA + HDL + tg_mmol + ALT + test_nmol + SHBG, data=pred,family=binomial(link="logit"))
+tab_full_euro <-mod_tablog(full_euro)
+
+
 
 ```
 
