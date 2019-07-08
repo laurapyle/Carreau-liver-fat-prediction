@@ -24,7 +24,7 @@ library(rms)
 set.seed(3654)
 
 # read  data
-pred <- read.csv("H:\\Endocrinology\\Green\\Carreau liver fat prediction\\Data\\NAFLD prediction score data.csv")
+pred <- read.csv("H:\\Endocrinology\\Green\\PCOS liver fat prediction\\Data\\NAFLD prediction score data.csv")
 # replace "." with "NA"
 pred[pred=="."] <- NA
 # remove missing observations
